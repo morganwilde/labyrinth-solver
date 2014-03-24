@@ -63,12 +63,40 @@ int main(void) {
 
     // Path finder
     fprintf(html, "%s\n", rawSvg(svg));
+
+    // Draw the labyrinth
+    char labPoints[64];
+    int k, l;
+    for (k = 0; k < grid.lines; k++) {
+        for (l = 0; l < grid.length; l++) {
+            if (grid.self[k][l] == ' ' || grid.self[k][l] == '-' || grid.self[k][l] == '+') {
+                sprintf(labPoints, "%.2f,%.2f %.2f,%.2f %.2f,%.2f %.2f,%.2f",
+                    l-0.9, (k-0.5)*2,
+                    l-0.9, (k+0.5)*2,
+                    l+0.9, (k+0.5)*2,
+                    l+0.9, (k-0.5)*2);
+
+                DOMPolygon bg = domPolygon(labPoints, "#FFFFFF");
+                if (grid.self[k][l] == '-')
+                    bg = domPolygon(labPoints, "#71AD2B");
+                if (grid.self[k][l] == '+')
+                    bg = domPolygon(labPoints, "#FF6840");
+
+                fprintf(html, "%s\n", rawPolygon(bg));
+            }
+        }
+    }
+
     fprintf(html, "%s\n", rawPolyline(polylineSolution));
     fprintf(html, "%s\n", rawPolyline(polylineStorage));
 
     while ((c = fgetc(templateBottom)) != EOF) {
         fputc(c, html);
     }
+
+    fclose(templateTop);
+    fclose(templateBottom);
+    fclose(html);
 
     return 0;
 }

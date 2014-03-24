@@ -26,6 +26,33 @@ char *rawSvg(DOMSvg svg) {
     return contents;
 }
 
+DOMPolygon domPolygon(char *points, char *fill) {
+    DOMPolygon polygon;
+    polygon.points = points;
+    polygon.fill = fill;
+
+    return polygon;
+}
+
+char *rawPolygon(DOMPolygon p) {
+    int     chars = 0;
+    char    *contentTemp = "<polygon points=\"\" fill=\"\" />";
+
+    chars += strlen(contentTemp);
+    chars += strlen(p.points);
+    chars += strlen(p.fill);
+
+    char *contents = malloc(sizeof(char) * (chars+1));
+
+    strcat(contents, "<polygon points=\"");
+    strcat(contents, p.points);
+    strcat(contents, "\" fill=\"");
+    strcat(contents, p.fill);
+    strcat(contents, "\" />");
+
+    return contents;
+}
+
 DOMPolyline domPolyline(char *id, char *fill, char *stroke, char *points) {
     DOMPolyline polyline;
     polyline.id = id;
