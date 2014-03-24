@@ -44,15 +44,35 @@ void walkGo(Walk *walk, Grid grid, Walk **success) {
     }
 }
 
-void walkSolutionPrint(Walk *walk, char **points) {
-    if (walk) {
+void solutionPrint(Point *points, char **attribute, int count) {
+    int i;
+    for (i = 0; i < count; i++) {
         char temp[32];
-        sprintf(temp, "%d,%d ", walk->location.x, walk->location.y*2);
+        sprintf(temp, "%d,%d ", points[i].x, points[i].y*2);
 
-        *points = realloc(*points, sizeof(char) * (strlen(*points)+strlen(temp)+1));
-        strcat(*points, temp);
+        attribute[0] = realloc(*attribute, sizeof(char) * (strlen(*attribute)+strlen(temp)+1));
+        strcat(*attribute, temp);
+    }
+}
 
-        walkSolutionPrint(walk->back, points);
+void solution(Walk *walk, Point **points, int *vertices) {
+    if (walk) {
+        int i = *vertices;
+        points[0] = realloc(points[0], sizeof(Point) * (i+1));
+        points[0][i] = walk->location;
+        i++;
+        *vertices = i;
+
+        solution(walk->back, points, vertices);
+    }
+}
+
+void solutionReverse(Point *points, Point **storage, int vertices) {
+    storage[0] = realloc(*storage, sizeof(Point) * vertices);
+
+    int i, j;
+    for (i = vertices-1, j = 0; i >= 0; i--, j++) {
+        storage[0][j] = points[i];
     }
 }
 
@@ -76,15 +96,21 @@ int main(void) {
     walkGo(walk, grid, &success);
     
     // Print solution
+    Point   *solutionBackwards = malloc(sizeof(Point) * 0);
+    int     vertices = 0;
+    Point   *sorted = malloc(sizeof(Point) * 0);
+    solution(success, &solutionBackwards, &vertices);
+    solutionReverse(solutionBackwards, &sorted, vertices);
+
+
     char    walkPolyOpen[] = "<polyline fill=\"none\" stroke=\"#000000\" points=\"",
             *walkPolyPoints = malloc(sizeof(char) * 0),
             walkPolyClose[] = "\" />";
 
-    walkSolutionPrint(success, &walkPolyPoints);
+    solutionPrint(sorted, &walkPolyPoints, vertices);
+    //walkSolutionPrint(success, &walkPolyPoints);
     printf("%s%s%s\n", walkPolyOpen, walkPolyPoints, walkPolyClose);
 
-    // TODO printf the path in reverse order
-    // TODO create polyline object in SVG lingo
 
     return 0;
 }
