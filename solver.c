@@ -24,8 +24,6 @@ void walkGo(Walk *walk, Grid grid, Walk **success) {
     if (grid.self[walk->location.y][walk->location.x] == '-') {
         *success = walk;
     } else {
-        //grid.self[walk->location.y][walk->location.x] = '.';
-        //labyrinthPrint(grid);
         int     pointsCount = 0;
         Point *points = walkPossibilities(walk->location, grid, &pointsCount);
 
@@ -43,6 +41,18 @@ void walkGo(Walk *walk, Grid grid, Walk **success) {
                 walkGo(forward, grid, success);
             }
         }
+    }
+}
+
+void walkSolutionPrint(Walk *walk, char **points) {
+    if (walk) {
+        char temp[32];
+        sprintf(temp, "%d,%d ", walk->location.x, walk->location.y*2);
+
+        *points = realloc(*points, sizeof(char) * (strlen(*points)+strlen(temp)+1));
+        strcat(*points, temp);
+
+        walkSolutionPrint(walk->back, points);
     }
 }
 
@@ -64,12 +74,15 @@ int main(void) {
 
     Walk *success = malloc(sizeof(Walk) * 1);
     walkGo(walk, grid, &success);
-    printf("(%d, %d)\n", success->location.x, success->location.y);
     
-    // TODO starting with the entry point create a tree of walks
-    // TODO save pointer to exit node
-    // TODO walk backwards from exit node to solution
-    // TODO save array of vertices of the path back
+    // Print solution
+    char    walkPolyOpen[] = "<polyline fill=\"none\" stroke=\"#000000\" points=\"",
+            *walkPolyPoints = malloc(sizeof(char) * 0),
+            walkPolyClose[] = "\" />";
+
+    walkSolutionPrint(success, &walkPolyPoints);
+    printf("%s%s%s\n", walkPolyOpen, walkPolyPoints, walkPolyClose);
+
     // TODO printf the path in reverse order
     // TODO create polyline object in SVG lingo
 
