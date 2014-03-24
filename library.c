@@ -46,7 +46,7 @@ char *labyrinthFile(char *labName) {
             if (found != NULL) {
                 // Save as an option
                 labyrinths = realloc(labyrinths, sizeof(char *) * (counter+1));
-                labyrinths[counter] = calloc(sizeof(char), strlen(dirStream->d_name));
+                labyrinths[counter] = calloc(strlen(dirStream->d_name)+1, sizeof(char));
                 strcpy(labyrinths[counter], dirStream->d_name);
 
                 // Print the UI
@@ -78,8 +78,7 @@ char *labyrinthFile(char *labName) {
 Grid labyrinthFileRead(char *labyrinth) {
     // Open stream
     FILE    *file = fopen(labyrinth, "r");
-    char    *line = malloc(sizeof(char) * 1),
-            c = 0;
+    char    c = 0;
 
     // Init the grid
     Grid    grid;
@@ -100,8 +99,8 @@ Grid labyrinthFileRead(char *labyrinth) {
                 testNewline,
                 tests = 1;
         while (tests && scanned != -1) {
-            grid.self = realloc(grid.self, sizeof(char *) * (grid.lines+1));
-            grid.self[grid.lines] = malloc(sizeof(char) * 1);
+            grid.self = realloc(grid.self, sizeof(char **) * (grid.lines+1));
+            grid.self[grid.lines] = malloc(sizeof(char *) * 1);
 
             scanned = fscanf(file, "%c", &c);
             
@@ -116,7 +115,7 @@ Grid labyrinthFileRead(char *labyrinth) {
             grid.length = 0;
             while (!testNewline && scanned != -1) {
                 // Read chars till new line
-                grid.self[grid.lines] = realloc(grid.self[grid.lines], sizeof(char) * (grid.length+1));
+                grid.self[grid.lines] = realloc(grid.self[grid.lines], sizeof(char *) * (grid.length+1));
                 grid.self[grid.lines][grid.length] = c;
                 grid.length++;
 
@@ -132,12 +131,6 @@ Grid labyrinthFileRead(char *labyrinth) {
                 testNewline = (c == '\n');
             }
             grid.self[grid.lines][grid.length] = '\0';
-            /*
-            if (scanned != -1)
-                printf("%c", c);
-            else
-                printf("\n");
-            */
 
             grid.lines++;
         }
@@ -157,13 +150,13 @@ Point *walkPossibilities(Point now, Grid grid, int *pointsCount) {
     int     length  = grid.length - 1,
             lines   = grid.lines - 1;
     // Tests
-    char    nw = (now.x > 0 && now.y > 0) ? 1 : 0,
+    char    //nw = (now.x > 0 && now.y > 0) ? 1 : 0,
             nn = (now.y > 0) ? 1 : 0,
-            ne = (now.x < length && now.y > 0) ? 1 : 0,
+            //ne = (now.x < length && now.y > 0) ? 1 : 0,
             ee = (now.x < length) ? 1 : 0,
-            se = (now.x < length && now.y < lines) ? 1 : 0,
+            //se = (now.x < length && now.y < lines) ? 1 : 0,
             ss = (now.y < lines) ? 1 : 0,
-            sw = (now.x > 0 && now.y < lines) ? 1 : 0,
+            //sw = (now.x > 0 && now.y < lines) ? 1 : 0,
             ww = (now.x > 0) ? 1 : 0;
 
     /*

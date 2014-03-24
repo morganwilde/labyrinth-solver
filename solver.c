@@ -97,6 +97,6 @@ int main(void) {
     fclose(templateTop);
     fclose(templateBottom);
     fclose(html);
-
+	
     return 0;
 }
