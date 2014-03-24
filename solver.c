@@ -7,17 +7,17 @@
 
 int main(void) {
     // Decide which labyrinth to walk
-    //char *labyrinth = labyrinthFile();
-    char labyrinth[] = "test.labyrinth";
+    char *labName = malloc(sizeof(char) * 0);
+    char *labyrinth = labyrinthFile(labName);
+    //char labyrinth[] = "test.labyrinth";
 
     // Open file and read it line by line
-    //Grid grid = labyrinthFileRead(labyrinth);
     Grid grid = labyrinthFileRead(labyrinth);
     labyrinthPrint(grid);
 
     // Start/End points
-    //printf("start[%c] - (%d, %d)\n", gridCellPoint(grid, grid.start), grid.start.x, grid.start.y);
-    //printf("end[%c] - (%d, %d)\n", gridCellPoint(grid, grid.end), grid.end.x, grid.end.y);
+    printf("start[%c] - (%d, %d)\n", gridCellPoint(grid, grid.start), grid.start.x, grid.start.y);
+    printf("end[%c] - (%d, %d)\n", gridCellPoint(grid, grid.end), grid.end.x, grid.end.y);
 
     // Start walking
     Walk *walk = walkMake(grid.start, NULL);
@@ -43,7 +43,7 @@ int main(void) {
 
     // Create an .html file
     char htmlFilename[512];
-    strcat(htmlFilename, labyrinth);
+    strcat(htmlFilename, labName);
     strcat(htmlFilename, ".html");
 
     FILE *html = fopen(htmlFilename, "wb");

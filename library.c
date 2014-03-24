@@ -33,7 +33,7 @@ char *hideExtension(char *filename, char *extension) {
     return temp;
 }
 
-char *labyrinthFile() {
+char *labyrinthFile(char *labName) {
     // Look for *.labyrinth files in pwd
     DIR *directory = opendir(".");
     struct dirent *dirStream = readdir(directory);;
@@ -46,11 +46,12 @@ char *labyrinthFile() {
             if (found != NULL) {
                 // Save as an option
                 labyrinths = realloc(labyrinths, sizeof(char *) * (counter+1));
-                labyrinths[counter] = malloc(sizeof(char) * strlen(dirStream->d_name));
+                labyrinths[counter] = calloc(sizeof(char), strlen(dirStream->d_name));
                 strcpy(labyrinths[counter], dirStream->d_name);
 
                 // Print the UI
-                char *filename = hideExtension(dirStream->d_name, found);
+                char *filename = malloc(sizeof(char) * 0);
+                filename = hideExtension(dirStream->d_name, found);
                 printf("%d. " FONT_U "%s" FONT_N "\n", (counter+1), filename);
                 counter++;
             }
@@ -62,7 +63,13 @@ char *labyrinthFile() {
     printf("Pick your labyrinth: ");
     // TODO replace this with AVIR
     scanf("%d", &pick);
+    printf("extension labyrinth: [%s]\n", labyrinths[0]);
+
     char *pickFilename = hideExtension(labyrinths[pick-1], strstr(labyrinths[pick-1], ".labyrinth"));
+
+    labName = realloc(labName, sizeof(char) * strlen(pickFilename));
+    strcpy(labName, pickFilename);
+
     printf("Walking the '%s' labyrinth...\n", pickFilename);
 
     return labyrinths[pick-1];
