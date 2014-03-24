@@ -63,7 +63,7 @@ char *labyrinthFile(char *labName) {
     printf("Pick your labyrinth: ");
     // TODO replace this with AVIR
     scanf("%d", &pick);
-    printf("extension labyrinth: [%s]\n", labyrinths[0]);
+    //printf("extension labyrinth: [%s]\n", labyrinths[0]);
 
     char *pickFilename = hideExtension(labyrinths[pick-1], strstr(labyrinths[pick-1], ".labyrinth"));
 
