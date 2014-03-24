@@ -145,3 +145,90 @@ void labyrinthPrint(Grid labyrinth) {
         printf("%s\n", labyrinth.self[i]);
     }
 }
+
+Point *walkPossibilities(Point now, Grid grid, int *pointsCount) {
+    int     length  = grid.length - 1,
+            lines   = grid.lines - 1;
+    // Tests
+    char    nw = (now.x > 0 && now.y > 0) ? 1 : 0,
+            nn = (now.y > 0) ? 1 : 0,
+            ne = (now.x < length && now.y > 0) ? 1 : 0,
+            ee = (now.x < length) ? 1 : 0,
+            se = (now.x < length && now.y < lines) ? 1 : 0,
+            ss = (now.y < lines) ? 1 : 0,
+            sw = (now.x > 0 && now.y < lines) ? 1 : 0,
+            ww = (now.x > 0) ? 1 : 0;
+
+    /*
+    printf("[%d][%d][%d]\n", nw, nn, ne);
+    printf("[%d][%c][%d]\n", ww, grid.self[now.y][now.x], ee);
+    printf("[%d][%d][%d]\n", sw, ss, se);
+    */
+
+    // Add points
+    Point *points = malloc(sizeof(Point) * 0);
+    int i = 0;
+
+    // TODO check if we're not moving back
+    if (grid.self[now.y][now.x] != '*') {
+        if (0) { // nw
+            if (grid.self[now.y-1][now.x-1] != '*') {
+                i++;
+                points = realloc(points, sizeof(Point) * i);
+                points[i-1] = pointMake(now.x-1, now.y-1);
+            }
+        }
+        if (nn) {
+            if (grid.self[now.y-1][now.x] != '*') {
+                i++;
+                points = realloc(points, sizeof(Point) * i);
+                points[i-1] = pointMake(now.x, now.y-1);
+            }
+        }
+        if (0) { // ne
+            if (grid.self[now.y-1][now.x+1] != '*') {
+                i++;
+                points = realloc(points, sizeof(Point) * i);
+                points[i-1] = pointMake(now.x+1, now.y-1);
+            }
+        }
+        if (ee) {
+            if (grid.self[now.y][now.x+1] != '*') {
+                i++;
+                points = realloc(points, sizeof(Point) * i);
+                points[i-1] = pointMake(now.x+1, now.y);
+            }
+        }
+        if (0) { // se
+            if (grid.self[now.y+1][now.x+1] != '*') {
+                i++;
+                points = realloc(points, sizeof(Point) * i);
+                points[i-1] = pointMake(now.x+1, now.y+1);
+            }
+        }
+        if (ss) {
+            if (grid.self[now.y+1][now.x] != '*') {
+                i++;
+                points = realloc(points, sizeof(Point) * i);
+                points[i-1] = pointMake(now.x, now.y+1);
+            }
+        }
+        if (0) { // sw
+            if (grid.self[now.y+1][now.x-1] != '*') {
+                i++;
+                points = realloc(points, sizeof(Point) * i);
+                points[i-1] = pointMake(now.x-1, now.y+1);
+            }
+        }
+        if (ww) {
+            if (grid.self[now.y][now.x-1] != '*') {
+                i++;
+                points = realloc(points, sizeof(Point) * i);
+                points[i-1] = pointMake(now.x-1, now.y);
+            }
+        }
+    }
+
+    *pointsCount = i;
+    return points;
+}

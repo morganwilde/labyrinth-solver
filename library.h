@@ -26,3 +26,6 @@ char *hideExtension(char *filename, char *extension);
 char *labyrinthFile();
 Grid labyrinthFileRead(char *labyrinth);
 void labyrinthPrint(Grid labyrinth);
+
+// Walker
+Point *walkPossibilities(Point now, Grid grid, int *pointsCount);
