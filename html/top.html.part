@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+		<style type="text/css">
+			html, body {width: 100%; height: 100%; margin: 0; padding: 0;}
+			svg {margin: 0; padding: 0;}
+		</style>
+		<script type="text/javascript">
+			function addPoint() {
+				if (window.polylineSolution.count < window.polylineStorage.count) {
+					window.polylineSolution.points += window.polylineStorage.p[window.polylineSolution.count] + " ";
+					window.polylineSolution.node.setAttribute("points", window.polylineSolution.points);
+					window.polylineSolution.count++;
+				}
+			}
+			window.onload = function() {
+				// Nodes
+				window.polylineSolution = {};
+				window.polylineStorage = {};
+				
+				window.polylineSolution.node 	= document.getElementById("solution");
+				window.polylineStorage.node 	= document.getElementById("storage");
+
+				// Points
+				window.polylineSolution.points 	= window.polylineSolution.node.getAttribute("points");
+				window.polylineSolution.count 	= 0;
+
+				window.polylineStorage.points 	= window.polylineStorage.node.getAttribute("points");
+				window.polylineStorage.p 		= window.polylineStorage.points.split(/ /g);
+				window.polylineStorage.count 	= window.polylineStorage.points.match(/ /g).length;
+				
+				var intervalID = window.setInterval(addPoint, 50);
+			}
+		</script>
+	</head>
+	<body>

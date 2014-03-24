@@ -232,3 +232,72 @@ Point *walkPossibilities(Point now, Grid grid, int *pointsCount) {
     *pointsCount = i;
     return points;
 }
+
+Walk *walkMake(Point location, Walk *back) {
+    Walk *walk = malloc(sizeof(Walk) * 1);
+    walk->back = back;
+    walk->forward = malloc(sizeof(Walk *) * 1);
+    walk->location = location;
+
+    return walk;
+}
+
+void walkGo(Walk *walk, Grid grid, Walk **success) {
+    // Base case - end of labyrinth
+    if (grid.self[walk->location.y][walk->location.x] == '-') {
+        *success = walk;
+    } else {
+        int     pointsCount = 0;
+        Point *points = walkPossibilities(walk->location, grid, &pointsCount);
+
+        int i;
+        for (i = 0; i < pointsCount; i++) {
+            if ((walk->back == NULL) || 
+                (points[i].x != walk->back->location.x) ||
+                (points[i].y != walk->back->location.y)) {
+
+                Walk *forward = walkMake(points[i], walk);
+
+                walk->forward = realloc(walk->forward, sizeof(Walk *) * (i+1));
+                walk->forward[i] = forward;
+
+                walkGo(forward, grid, success);
+            }
+        }
+    }
+}
+
+void solutionPrint(Point *points, char **attribute, int count) {
+    int i;
+    for (i = 0; i < count; i++) {
+        char temp[32];
+        if (i != 0)
+            sprintf(temp, " %d,%d", points[i].x, points[i].y*2);
+        else
+            sprintf(temp, "%d,%d", points[i].x, points[i].y*2);
+
+        attribute[0] = realloc(*attribute, sizeof(char) * (strlen(*attribute)+strlen(temp)+1));
+        strcat(*attribute, temp);
+    }
+}
+
+void solution(Walk *walk, Point **points, int *vertices) {
+    if (walk) {
+        int i = *vertices;
+        points[0] = realloc(points[0], sizeof(Point) * (i+1));
+        points[0][i] = walk->location;
+        i++;
+        *vertices = i;
+
+        solution(walk->back, points, vertices);
+    }
+}
+
+void solutionReverse(Point *points, Point **storage, int vertices) {
+    storage[0] = realloc(*storage, sizeof(Point) * vertices);
+
+    int i, j;
+    for (i = vertices-1, j = 0; i >= 0; i--, j++) {
+        storage[0][j] = points[i];
+    }
+}

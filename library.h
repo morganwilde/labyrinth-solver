@@ -19,6 +19,12 @@ typedef struct Grid {
     Point   end;
 } Grid;
 
+typedef struct Walk {
+    struct Walk *back;
+    struct Walk **forward;
+    Point       location;
+} Walk;
+
 Point pointMake(int x, int y);
 char gridCell(Grid grid, int x, int y);
 char gridCellPoint(Grid grid, Point p);
@@ -29,3 +35,8 @@ void labyrinthPrint(Grid labyrinth);
 
 // Walker
 Point *walkPossibilities(Point now, Grid grid, int *pointsCount);
+void solutionReverse(Point *points, Point **storage, int vertices);
+void solution(Walk *walk, Point **points, int *vertices);
+void solutionPrint(Point *points, char **attribute, int count);
+void walkGo(Walk *walk, Grid grid, Walk **success);
+Walk *walkMake(Point location, Walk *back);
