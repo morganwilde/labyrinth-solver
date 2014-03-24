@@ -33,10 +33,11 @@ int main(void) {
     solutionReverse(solutionBackwards, &sorted, vertices);
 
     // Store for printing
-    char *polylinePoints = malloc(sizeof(char) * 0);
+    char *polylinePoints = malloc(sizeof(char) * 1);
+	polylinePoints[0] = '\0';
 
     solutionPrint(sorted, &polylinePoints, vertices);
-
+	//printf("{%s}\n", polylinePoints);
     DOMSvg      svg = domSvg(grid.length, grid.lines*2);
     DOMPolyline polylineSolution = domPolyline("solution", "none", "#FF0000", "");
     DOMPolyline polylineStorage = domPolyline("storage", "none", "", polylinePoints);
@@ -65,24 +66,30 @@ int main(void) {
     fprintf(html, "%s\n", rawSvg(svg));
 
     // Draw the labyrinth
-    char labPoints[64];
+    char *labPoints = calloc(128, sizeof(char));
+	DOMPolygon bg; // = malloc(sizeof(DOMPolygon) * 1);
     int k, l;
     for (k = 0; k < grid.lines; k++) {
         for (l = 0; l < grid.length; l++) {
             if (grid.self[k][l] == ' ' || grid.self[k][l] == '-' || grid.self[k][l] == '+') {
+				labPoints[0] = '\0';
                 sprintf(labPoints, "%.2f,%.2f %.2f,%.2f %.2f,%.2f %.2f,%.2f",
                     l-0.9, (k-0.5)*2,
                     l-0.9, (k+0.5)*2,
                     l+0.9, (k+0.5)*2,
                     l+0.9, (k-0.5)*2);
 
-                DOMPolygon bg = domPolygon(labPoints, "#FFFFFF");
+				//labPoints[strlen(labPoints)+1] = '\0';
+                bg = domPolygon(labPoints, "#FFFFFF");
                 if (grid.self[k][l] == '-')
                     bg = domPolygon(labPoints, "#71AD2B");
                 if (grid.self[k][l] == '+')
                     bg = domPolygon(labPoints, "#FF6840");
 
+				//printf("[%s]\n", rawPolygon(bg));
                 fprintf(html, "%s\n", rawPolygon(bg));
+
+				labPoints = calloc(128, sizeof(char));
             }
         }
     }

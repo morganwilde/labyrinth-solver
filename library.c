@@ -270,7 +270,7 @@ void walkGo(Walk *walk, Grid grid, Walk **success) {
 void solutionPrint(Point *points, char **attribute, int count) {
     int i;
     for (i = 0; i < count; i++) {
-        char temp[32];
+        char temp[64];
         if (i != 0)
             sprintf(temp, " %d,%d", points[i].x, points[i].y*2);
         else
